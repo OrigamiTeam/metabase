@@ -70,6 +70,13 @@ const NewItemMenu = ({
       });
     }
 
+    items.push({
+      title: t`QuAi`, // Título do item
+      icon: "star",                 // Ícone exibido junto ao título
+      link: "/quai",     // Caminho para o novo componente
+      onClose: onCloseNavbar,       // Fecha o menu ao clicar
+    });
+
     if (hasNativeWrite) {
       items.push({
         title: hasDatabaseWithJsonEngine ? t`Native query` : t`SQL query`,
@@ -83,6 +90,7 @@ const NewItemMenu = ({
         }),
         onClose: onCloseNavbar,
       });
+      
     }
 
     items.push(

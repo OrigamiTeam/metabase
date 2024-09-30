@@ -1,6 +1,7 @@
 (ns metabase.api.routes
   (:require
    [compojure.core :refer [GET]]
+   [compojure.core :refer [POST]]
    [compojure.route :as route]
    [metabase.api.action :as api.action]
    [metabase.api.activity :as api.activity]
@@ -55,7 +56,8 @@
    [metabase.plugins.classloader :as classloader]
    [metabase.util.i18n :refer [deferred-tru]]
    [ring.middleware.content-type :as content-type]
-   [ring.util.response :as response]))
+   [ring.util.response :as response]
+   [metabase.api.openai :as openai]))
 
 (when config/ee-available?
   (classloader/require 'metabase-enterprise.api.routes))
@@ -150,5 +152,6 @@
   (context "/timeline-event"       [] (+auth api.timeline-event/routes))
   (context "/user"                 [] (+auth api.user/routes))
   (context "/api-key"              [] (+auth api.api-key/routes))
+  (context "/openai" [](POST "/generate-sql" request (openai/generate-sql-handler request)))
   (context "/util"                 [] api.util/routes)
   (route/not-found (constantly {:status 404, :body (deferred-tru "API endpoint does not exist.")})))

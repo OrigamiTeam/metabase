@@ -227,6 +227,10 @@ export class UnconnectedDataSelector extends Component {
     const getField = id => _.findWhere(fields, { id }) || metadata.field(id);
 
     function setSelectedDatabase(database) {
+      Databases.loadList({
+        loadingAndErrorWrapper: false,
+        listName: "allDatabases",
+      }),
       selectedDatabase = database;
       if (!schemas && database) {
         schemas = database.schemas;
@@ -234,6 +238,7 @@ export class UnconnectedDataSelector extends Component {
       if (!tables && Array.isArray(schemas) && schemas.length === 1) {
         tables = schemas[0].tables;
       }
+      console.log(tables);
     }
 
     function setSelectedSchema(schema) {

@@ -26,6 +26,7 @@
                                              :exclusions  [commons-codec/commons-codec
                                                            commons-io/commons-io
                                                            slingshot/slingshot]}
+  metosin/ring-http-response {:mvn/version "0.9.1"}
   clojure.java-time/clojure.java-time       {:mvn/version "1.4.2"}              ; java.time utilities
   clojurewerkz/quartzite                    {:mvn/version "2.2.0"               ; scheduling library
                                              :exclusions  [c3p0/c3p0

@@ -64,6 +64,7 @@ import {
   IsNotAuthenticated,
 } from "./route-guards";
 import { getApplicationName } from "./selectors/whitelabel";
+import DatabaseList from "./quAi";
 
 export const getRoutes = store => {
   const applicationName = getApplicationName(store.getState());
@@ -170,6 +171,8 @@ export const getRoutes = store => {
             <Route path=":slug/:objectId" component={QueryBuilder} />
           </Route>
 
+          <Route path="/quai" component={DatabaseList} />
+
           <Route path="/metabot" component={CanAccessMetabot}>
             <Route path="database/:databaseId" component={DatabaseMetabotApp} />
             <Route path="model/:slug" component={ModelMetabotApp} />
@@ -182,7 +185,7 @@ export const getRoutes = store => {
             <IndexRoute component={QueryBuilder} />
             <Route
               path="new"
-              title={t`New Model`}
+              title={t`Novo Model`}
               component={NewModelOptions}
             />
             <Route path=":slug" component={QueryBuilder} />
