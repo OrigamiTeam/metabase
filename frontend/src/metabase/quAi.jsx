@@ -5,6 +5,8 @@ import Schemas from './entities/schemas';
 import Tables from './entities/tables';
 import Questions from "./entities/questions";
 import ButtonRoot from '../metabase/core/components/Button';
+import logo from './pset.png';
+import logoQL from './unnamed.png';
 
 
 const DatabaseList = () => {
@@ -59,7 +61,7 @@ const DatabaseList = () => {
   };
 
   const handleSubmitQuestion = async () => {
-    setIsLoading(true); // Defina o estado de carregamento para verdadeiro
+    setIsLoading(true); 
     const availableData = schemas.map(schema => ({
       schema: schema.name,
       tables: (tables[schema.id] || []).map(table => {
@@ -114,7 +116,7 @@ const DatabaseList = () => {
     } catch (error) {
       console.error('Erro ao gerar o SQL:', error);
     } finally {
-      setIsLoading(false); // Retorne o estado de carregamento para falso após a operação
+      setIsLoading(false); 
     }
   };
 
@@ -127,9 +129,23 @@ const DatabaseList = () => {
       alignItems: 'center',
       backgroundColor: '#FFFFFF',
       height: '100%',
+      width: '100%', 
     }}>
-      <div style={{ margin: '20px', alignSelf: 'start' }}>
-        <h2>New Question</h2>
+      <div style={{ 
+        marginRight: '30px',
+        marginLeft: '30px', 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        width: 'calc(100% - 60px)', 
+      }}>
+        <div >
+          <h2>Nova pergunta</h2>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <img src={logo} alt="Logo" style={{ width: '100px', height: '80px', marginRight: '20px' }} />
+          <img src={logoQL} alt="Logo" style={{ width: '150px', height: 'auto', marginTop: '20px'}} />
+        </div>
       </div>
       <div style={{
         width: '100%',
@@ -186,7 +202,7 @@ const DatabaseList = () => {
       />
       <br/>
       <ButtonRoot onClick={handleSubmitQuestion} purple disabled={isButtonDisabled}>
-        {isLoading ? 'Carregando...' : 'Enviar Pergunta'}
+        {isLoading ? 'A enviar...' : 'Enviar pergunta'}
       </ButtonRoot>
     </div>
   );
