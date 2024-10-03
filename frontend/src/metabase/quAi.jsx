@@ -4,6 +4,8 @@ import Databases from './entities/databases';
 import Schemas from './entities/schemas';
 import Tables from './entities/tables';
 import Questions from "./entities/questions";
+import ButtonRoot from '../metabase/core/components/Button';
+
 
 const DatabaseList = () => {
   const dispatch = useDispatch();
@@ -11,6 +13,7 @@ const DatabaseList = () => {
   const [tables, setTables] = useState({});
   const [schemas, setSchemas] = useState([]);
   const [userQuestion, setUserQuestion] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Estado para rastrear o carregamento
 
   const databases = useSelector((state) =>
     Databases.selectors.getListUnfiltered(state, {})
@@ -37,7 +40,6 @@ const DatabaseList = () => {
         Tables.api
           .list({ dbId: selectedDatabaseId, schemaId: schema.id }, dispatch)
           .then((fetchedTables) => {
-            // Logando os detalhes das tabelas recebidas
             fetchedTables.forEach(table => {
               console.log(`Tabela recebida para schema ${schema.name}:`, table);
             });
@@ -52,13 +54,12 @@ const DatabaseList = () => {
     }
   }, [selectedDatabaseId, schemas, dispatch]);
 
-  
-
   const handleUserQuestionChange = (e) => {
     setUserQuestion(e.target.value);
   };
 
   const handleSubmitQuestion = async () => {
+    setIsLoading(true); // Defina o estado de carregamento para verdadeiro
     const availableData = schemas.map(schema => ({
       schema: schema.name,
       tables: (tables[schema.id] || []).map(table => {
@@ -85,7 +86,6 @@ const DatabaseList = () => {
         throw new Error('Erro ao comunicar com o servidor');
       }
   
-      // Corrigido: Use await para processar JSON corretamente
       const sqlQuery = await response.text(); 
   
       console.log('Generated SQL:', sqlQuery);
@@ -101,60 +101,93 @@ const DatabaseList = () => {
         visualization_settings: {},
       };
   
-      dispatch(Questions.api.create(cardDetails, dispatch)).then((newCard) => {
-        console.log(newCard);
-        const cardId = newCard.id; 
-  
-        window.location.href = `/question/${cardId}`;
-      }).catch(error => {
-        console.error('Erro ao criar o card:', error);
-      });
+      dispatch(Questions.api.create(cardDetails, dispatch))
+        .then((newCard) => {
+          console.log(newCard);
+          const cardId = newCard.id; 
+          window.location.href = `/question/${cardId}`;
+        })
+        .catch(error => {
+          console.error('Erro ao criar o card:', error);
+        });
   
     } catch (error) {
       console.error('Erro ao gerar o SQL:', error);
+    } finally {
+      setIsLoading(false); // Retorne o estado de carregamento para falso após a operação
     }
   };
-  
-  
+
+  const isButtonDisabled = !selectedDatabaseId || userQuestion.trim() === '' || isLoading;
+
   return (
-    <div>
-      <h1>Lista de Bancos de Dados</h1>
-      <select onChange={(e) => setSelectedDatabaseId(parseInt(e.target.value, 10))} value={selectedDatabaseId || ''}>
-        <option value="" disabled>
-          Selecione um banco de dados
-        </option>
-        {databases.map((db) => (
-          <option key={db.id} value={db.id}>
-            {db.name}
+    <div style={{ 
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      backgroundColor: '#FFFFFF',
+      height: '100%',
+    }}>
+      <div style={{ margin: '20px', alignSelf: 'start' }}>
+        <h2>New Question</h2>
+      </div>
+      <div style={{
+        width: '100%',
+        padding: '20px',
+        borderTop: '1px solid #ccc',
+        borderBottom: '1px solid #ccc',
+        backgroundColor: '#F9FBFC',
+        display: 'flex',
+      }}>
+        <select
+          style={{
+            width: '100%',
+            backgroundColor: '#F9FBFC',
+            border: 'none',
+            outline: 'none',
+            appearance: 'none', 
+            WebkitAppearance: 'none',
+            MozAppearance: 'none',
+            color: '#333',
+          }}
+          onChange={(e) => setSelectedDatabaseId(parseInt(e.target.value, 10))}
+          value={selectedDatabaseId || ''}
+        >
+          <option value="" disabled style={{ color: '#ccc' }}>
+            Selecione um banco de dados
           </option>
-        ))}
-      </select>
-      <br/>
-      {selectedDatabaseId && schemas.length > 0 && (
-        <div>
-          <h2>Schemas e Tabelas</h2>
-          {schemas.map((schema) => (
-            <div key={schema.id}>
-              <h3>{schema.name}</h3>
-              <ul>
-                {(tables[schema.id] || []).map((table) => (
-                  <li key={table.id}>{table.name}</li>
-                ))}
-              </ul>
-            </div>
+          {databases.map((db) => (
+            <option key={db.id} value={db.id}>
+              {db.name}
+            </option>
           ))}
-        </div>
-      )}
-      <br/>
+        </select>
+      </div>
       <textarea
+        style={{
+          width: '100%',
+          height: '50%',
+          padding: '20px',
+          appearance: 'none',
+          WebkitAppearance: 'none',
+          MozAppearance: 'none',
+          marginBottom: '20px',
+          backgroundColor: '#F9FBFC',
+          borderTop: 'none',
+          borderLeft: 'none',
+          borderRight: 'none',
+          borderBottom: '1px solid #ccc',
+          outline: 'none',
+        }}
         placeholder="Digite sua pergunta aqui..."
         value={userQuestion}
         onChange={handleUserQuestionChange}
         rows={4}
-        cols={50}
       />
       <br/>
-      <button onClick={handleSubmitQuestion}>Enviar Pergunta</button>
+      <ButtonRoot onClick={handleSubmitQuestion} purple disabled={isButtonDisabled}>
+        {isLoading ? 'Carregando...' : 'Enviar Pergunta'}
+      </ButtonRoot>
     </div>
   );
 };
