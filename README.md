@@ -144,10 +144,10 @@ clojure -M:run
 ```
 
 ## Backend
-To make any changes to the QuAi feature in the backend (Clojure), navigate to src/metabase/api/openai.clj.
+To make any changes to the QuAi feature in the backend (Clojure), navigate to [src/metabase/api/openai.clj].
 In this file, you will find a Clojure controller that handles a POST request with database information and communicates with the artificial intelligence endpoint to receive and return the generated SQL query.
 
-To add a new route to the Clojure API after creating the .clj file, go to src/metabase/api/routes.clj.
+To add a new route to the Clojure API after creating the .clj file, go to [src/metabase/api/routes.clj].
 This file contains all the predefined routes in the Clojure Metabase API. You can add new routes in the following way:
 ```
 (context "/openai" []
@@ -161,17 +161,17 @@ Make sure to import the namespace:
 
 ## Frontend
 
-To make any changes to the QuAi feature on the frontend, go to frontend/src/metabase/quAi.jsx.
+To make any changes to the QuAi feature on the frontend, go to [frontend/src/metabase/quAi.jsx].
 In this file, you’ll find the full screen of the feature and the logic for communication with the Clojure backend using React-Redux with dispatch to process calls and wait for data responses, such as the list of databases and table information.
 
-To add a new route to the frontend, navigate to frontend/src/metabase/routes.jsx and add the following format. You need to provide the path to the file and the name of the exported component:
+To add a new route to the frontend, navigate to [frontend/src/metabase/routes.jsx] and add the following format. You need to provide the path to the file and the name of the exported component:
 ```
 <Route path="/quai" component={QuAi} />
 ```
 
 ### Metabase Navigation Menu
 
-To add a new item to the dropdown menu for new queries, go to frontend/src/metabase/components/NewItemMenu/NewItemMenu.tsx and add a push to the list of menu items:
+To add a new item to the dropdown menu for new queries, go to [frontend/src/metabase/components/NewItemMenu/NewItemMenu.tsx] and add a push to the list of menu items:
 ```
 items.push({
   title: t`QuAi`,             // Item title
